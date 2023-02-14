@@ -1,0 +1,41 @@
+name: 'Scan'
+
+on:
+  push: {}
+
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+  statuses: write
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Reset Permissions
+        run: chmod -R 0777 "$(pwd)"
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - run: npm ci --prefer-offline --no-audit
+
+      - name: Remove existing CodeQL database
+        run: rm -Rf /__w/_temp/codeql_databases
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          config-file: "${{ github.workspace }}/.github/codeql/codeql-config.yaml"
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+        with:
+          config-file: "${{ github.workspace }}/.github/codeql/codeql-config.yaml"
+
