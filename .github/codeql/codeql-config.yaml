@@ -1,0 +1,17 @@
+name: 'CodeQL Scanning Configuration'
+
+languages: 'javascript'
+
+queries:
+  - uses: security-extended
+
+paths:
+  - apps
+  - libs
+
+paths-ignore:
+  - '**/node_modules/**/*'
+  - '**/__fixtures__/**/*'
+  - '**/*.test.ts'
+  - '**/*.test.js'
+
